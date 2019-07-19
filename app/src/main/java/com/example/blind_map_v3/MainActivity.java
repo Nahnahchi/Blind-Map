@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 speak( null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
             }
         });
-        
+
         curLocationCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
