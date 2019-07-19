@@ -2,6 +2,7 @@ package com.example.blind_map_v3;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,13 +17,16 @@ import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.os.StrictMode;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +65,9 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.mapbox.mapboxsdk.style.layers.CircleLayer;
@@ -131,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private static final String TAG = "MainActivity";
     private DirectionsRoute currentRout;
     private Button speak;
+    private static final int REQUEST_CODE_SPEECH_INPUT = 10;
+    ImageButton mVoiceBtn;
 
    // MapboxTilequery tilequery;
     //private Marker
@@ -208,11 +216,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         curLocationCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MainActivity.this,
-                        getString(R.string.tap_on_map_instruction),
-                        Toast.LENGTH_LONG
-                ).show();
 
                 CameraPosition position = new CameraPosition.Builder()
                         .target(new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude())) // Sets the new camera position
@@ -225,76 +228,21 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                         .newCameraPosition(position), 7000);
             }
         });
-/*
-        getAddressButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    GeoCoding geoCoding = new GeoCoding(curentLocation.getLongitude(), curentLocation.getLatitude());
-                    Map<String,String> addresAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
-                    String name = "";
-                    String address = "";
-                    for (Map.Entry<String,String> pair : addresAndPOI.entrySet()) {
-                        if(pair.getKey().equals("name")){
-                            name = pair.getValue();
-                        } else if (pair.getKey().equals("address")){
-                            address = pair.getValue();
-                        } else{
-                            name = "ERROR";
-                            address = "ERROR";
-                        }
-                    }
 
-                    Toast.makeText(
-                            MainActivity.this,
-                            "Address = " + address + " Name =" + name,
-                            Toast.LENGTH_LONG
-                    ).show();
-                } catch (JSONException e){
-                    System.err.println(e.getMessage());
-                    Toast.makeText(
-                            MainActivity.this,
-                            "JSON " + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
-                }catch (IOException e) {
-                    System.err.println(e.getMessage());
-                    Toast.makeText(
-                            MainActivity.this,
-                            "IO" + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
-            }
-        });
-*/
         getAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
                 Style style = mapboxMap.getStyle();
                 if (style != null) {
-// Move and display the click center layer's red marker icon to wherever the map was clicked on
+                    // Move and display the click center layer's red marker icon to wherever the map was clicked on
 
                     GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_GEOJSON_SOURCE_ID);
                     if (clickLocationSource != null) {
                         clickLocationSource.setGeoJson(Point.fromLngLat(point.getLongitude(), point.getLatitude()));
                     }
-
-// Use the map click location to make a Tilequery API call
+                // Use the map click location to make a Tilequery API call
                     makeTilequeryApiCall(style, point);
-//                    if(featureList.isEmpty()){
-//                        System.out.println("ERRROE");
-//                    }
-//                    for (Feature feature : featureList) {
-//                        System.out.println(feature.toString());
-//                    }
-//
-//                    Toast.makeText(
-//                            MainActivity.this,
-//                            new NearPoints(featureList).getClosestFeatureName(),
-//                            Toast.LENGTH_LONG
-//                    ).show();
                 }
             }
         });
@@ -323,41 +271,20 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
-//                        VectorSource vectorSource = new VectorSource(
-//                                "trees-source",
-//                                "http://api.mapbox.com/v4/mapbox.mapbox-streets-v8.json?access_token=" + getString(R.string.mapbox_access_token)
-//                        );
-//                        style.addSource(vectorSource);
-//                        CircleLayer circleLayer = new CircleLayer("trees-style", "trees-source");
-//// replace street-trees-DC-9gvg5l with the name of your source layer
-//                        circleLayer.setSourceLayer("pois");
-//                        circleLayer.withProperties(
-//                                circleOpacity(1.6f),
-//                                circleColor(Color.parseColor("#D81B60")),
-//                                circleRadius(
-//                                        interpolate(exponential(1.0f), get("DBH"),
-//                                                stop(0, 0f),
-//                                                stop(1, 1f),
-//                                                stop(110, 11f)
-//                                        )
-//                                )
-//                        );
-//                        style.addLayer(circleLayer);
-
-
                         enableLocationComponent(style);
-                        //addClickLayer(style);
                         addClickLayer2(style);
                         addResultLayer(style);
-
-                        // Toast instructing user to tap on the map
-                        Toast.makeText(MainActivity.this,getString
-                                (R.string.tap_on_map_instruction),
-                                Toast.LENGTH_LONG).show();
-                        mapboxMap.addOnMapClickListener(MainActivity.this);
                     }
 
                 });
+
+        mVoiceBtn = findViewById(R.id.voiceBtn);
+        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                speakToMic();
+            }
+        });
     }
 
 
@@ -693,5 +620,124 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                     Toast.LENGTH_LONG
                     ).show();
     }
+
+    private void speakToMic() {
+        // intent to show speech to a text dialog
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+        // start intent
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        } catch (Exception e) {
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // get voice input and handle it
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null) {
+            final String[] commandsEn = {"address", "places", "interest"};
+            final String[] commandsLv = {"adrese", "interesantas", "vietas"};
+            final String[] commandsRu = {"адрес", "достопримечательности", "места"};
+            String[] commands;
+            switch(Locale.getDefault().toString()) {
+                case "en_GB":
+                case "en_US": {
+                    commands = commandsEn;
+                    break;
+                }
+                case "lv_LV": {
+                    commands = commandsLv;
+                    break;
+                }
+                case "ru_RU": {
+                    commands = commandsRu;
+                    break;
+                }
+                default: {
+                    commands = null;
+                    Toast.makeText(getApplicationContext(), "Please set your phone language to EN, RU or LV for voice commands!", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+            if(commands != null) {
+                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (result.get(0).contains(commands[0])) {
+                    Toast.makeText(getApplicationContext(), commands[0], Toast.LENGTH_SHORT).show();
+                    speak(null,address());
+                } else if (result.get(0).contains(commands[1]) || result.get(0).contains(commands[2])) {
+                    Toast.makeText(getApplicationContext(), commands[1] + " " + commands[2], Toast.LENGTH_SHORT).show();
+                    getPOI();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Wrong command!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Failed to recognize speech!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String address(){
+        try {
+            GeoCoding geoCoding = new GeoCoding(curentLocation.getLongitude(), curentLocation.getLatitude());
+            Map<String,String> addresAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+            String name = "";
+            String address = "";
+            for (Map.Entry<String,String> pair : addresAndPOI.entrySet()) {
+                if(pair.getKey().equals("name")){
+                    name = pair.getValue();
+                } else if (pair.getKey().equals("address")){
+                    address = pair.getValue();
+                } else{
+                    name = "ERROR";
+                    address = "ERROR";
+                }
+            }
+
+            Toast.makeText(
+                    MainActivity.this,
+                    "Address = " + address + " Name =" + name,
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return "Address = " + address;
+        } catch (JSONException e){
+            System.err.println(e.getMessage());
+            Toast.makeText(
+                    MainActivity.this,
+                    "JSON " + e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        }catch (IOException e) {
+            System.err.println(e.getMessage());
+            Toast.makeText(
+                    MainActivity.this,
+                    "IO" + e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+        return null;
+    }
+
+    private void getPOI(){
+        LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
+        Style style = mapboxMap.getStyle();
+        if (style != null) {
+            // Move and display the click center layer's red marker icon to wherever the map was clicked on
+
+            GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_GEOJSON_SOURCE_ID);
+            if (clickLocationSource != null) {
+                clickLocationSource.setGeoJson(Point.fromLngLat(point.getLongitude(), point.getLatitude()));
+            }
+            // Use the map click location to make a Tilequery API call
+            makeTilequeryApiCall(style, point);
+        }
+    }
+
 
 }
