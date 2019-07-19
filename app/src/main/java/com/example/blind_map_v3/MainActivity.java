@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private NavigationMapRoute navigationMapRoute;
     private static final String TAG = "MainActivity";
     private DirectionsRoute currentRout;
+    private Button speak;
 
    // MapboxTilequery tilequery;
     //private Marker
@@ -196,6 +197,14 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        speak = findViewById(R.id.Speak);
+        speak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                speak( null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+            }
+        });
+        
         curLocationCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -302,6 +311,10 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         });
     }
 
+    public void speak(String locale, String toSpeak) {
+        new Speaker(this, locale, toSpeak);
+    }
+
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
@@ -370,6 +383,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     @Override
     public void onPause() {
         super.onPause();
+        Speaker.onPause();
         mapView.onPause();
     }
 
