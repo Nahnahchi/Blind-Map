@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blind_Map_v3</string>
+    <string name="app_name">Blind Map</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw</string>
     <string name="location_component_fragment_text">User\'s current location on a map fragment</string>
     <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality.</string>

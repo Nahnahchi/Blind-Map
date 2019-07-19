@@ -609,12 +609,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
                 //tilequeryResponseTextView.setText(response.body().toJson());
-//                System.err.println(response.body().toString());
-//                System.err.println(response.body().features().get(0).getProperty("name"));
-//                System.err.println(response.body().features().get(0).getProperty("tilequery"));
+               System.err.println(response.body().toString());
+                System.err.println(response.body().features().get(0).getProperty("name"));
+                System.err.println(response.body().features().get(0).getProperty("tilequery"));
                 featureList = response.body().features();
                 System.err.println(featureList.size());
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
+                speak(null,new NearPoints(featureList).getClosestFeatureName());
                 GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
                 if (resultSource != null && response.body().features() != null) {
                     resultSource.setGeoJson(FeatureCollection.fromFeatures(response.body().features()));
