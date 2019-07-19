@@ -257,6 +257,14 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 NavigationLauncher.startNavigation(MainActivity.this,options);
             }
         });
+
+        mVoiceBtn = findViewById(R.id.voiceBtn);
+        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                speakToMic();
+            }
+        });
     }
 
     public void speak(String locale, String toSpeak) {
@@ -271,20 +279,43 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
+                        //                        VectorSource vectorSource = new VectorSource(
+//                                "trees-source",
+//                                "http://api.mapbox.com/v4/mapbox.mapbox-streets-v8.json?access_token=" + getString(R.string.mapbox_access_token)
+//                        );
+//                        style.addSource(vectorSource);
+//                        CircleLayer circleLayer = new CircleLayer("trees-style", "trees-source");
+//// replace street-trees-DC-9gvg5l with the name of your source layer
+//                        circleLayer.setSourceLayer("pois");
+//                        circleLayer.withProperties(
+//                                circleOpacity(1.6f),
+//                                circleColor(Color.parseColor("#D81B60")),
+//                                circleRadius(
+//                                        interpolate(exponential(1.0f), get("DBH"),
+//                                                stop(0, 0f),
+//                                                stop(1, 1f),
+//                                                stop(110, 11f)
+//                                        )
+//                                )
+//                        );
+//                        style.addLayer(circleLayer);
+
+
                         enableLocationComponent(style);
+                        //addClickLayer(style);
                         addClickLayer2(style);
                         addResultLayer(style);
+
+                        // Toast instructing user to tap on the map
+                        Toast.makeText(MainActivity.this,getString
+                                        (R.string.tap_on_map_instruction),
+                                Toast.LENGTH_LONG).show();
+                        mapboxMap.addOnMapClickListener(MainActivity.this);
                     }
 
                 });
 
-        mVoiceBtn = findViewById(R.id.voiceBtn);
-        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                speakToMic();
-            }
-        });
+
     }
 
 
@@ -463,7 +494,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
             return true;
         }
-
+        toastMSG("ERRRRRRRRR");
         return false;
 
     }
