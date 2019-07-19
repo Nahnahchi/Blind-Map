@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Blind_Map_v3</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw</string>
+    <string name="location_component_fragment_text">User\'s current location on a map fragment</string>
+    <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality.</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
+    <string name="tracking_enabled">Tracking mode re-enabled</string>
+    <string name="tracking_already_enabled">Tracking already enabled. Move the map</string>
+    <string name="current_location">current_location Lang %f Lat %f</string>
+    <string name="new_location">new_location Lat %s Long %s</string>
+    <string name="tap_on_map_instruction">Camera jump</string>
+    <string name="api_response">Tilequery API response:</string>
+    <string name="api_error">Error with the request. Do you have internet access?</string>
+    <string name="no_near_points">There are no points of interest around</string>
+    <string name="start_navigating">Start Navigating</string>
+
+</resources>
