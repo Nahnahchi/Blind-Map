@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private Point destinationPosition;
     private Button curLocationCamera;
     private Button getAddressButton; //TODO only for test
-    private Button layerButton; //TODO only for tests
     private Button navigationButton;
     private TextView tilequeryResponseTextView;
     private List<Feature> featureList;
@@ -193,12 +192,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
+                toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
 
                 /*curentLocation.getBearing();
                 creatFeatureList();
                 toastMSG(String.valueOf(featureList.size()));*/
-                System.out.println(address(24.16046938892441, 56.970773669248075));
+                //System.out.println(address(24.16046938892441, 56.970773669248075));
             }
         });
 
@@ -382,14 +381,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 if (location == null) {
                     return;
                 }
-
-                // Create a Toast which displays the new location's coordinates
-//                Toast.makeText(activity, String.format(activity.getString(R.string.new_location),
-//                        String.valueOf(result.getLastLocation().getLatitude()),
-//                        String.valueOf(result.getLastLocation().getLongitude())),
-//                        Toast.LENGTH_SHORT).show();
-
-                // Pass the new location to the Maps SDK's LocationComponent
                 if (activity.mapboxMap != null && result.getLastLocation() != null) {
                     activity.mapboxMap.getLocationComponent().forceLocationUpdate(result.getLastLocation());
                 }
@@ -487,19 +478,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 });
     }
 
-
-    //TODO DELETE
-    private void toggleLayer() {
-        Layer layer = mapboxMap.getStyle().getLayer("trees-style");
-        if (layer != null) {
-            if (VISIBLE.equals(layer.getVisibility().getValue())) {
-                layer.setProperties(visibility(NONE));
-            } else {
-                layer.setProperties(visibility(VISIBLE));
-            }
-        }
-    }
-
     private void creatFeatureList(){
         LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
         Style style = mapboxMap.getStyle();
@@ -541,6 +519,61 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 System.err.println(response.body().features().get(0).getProperty("tilequery"));
                 featureList = response.body().features();
                 System.err.println(featureList.size());
+                toastMSG(new NearPoints(featureList).getClosestFeatureName());
+                speak(null,new NearPoints(featureList).getClosestFeatureName());
+
+                GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
+                if (resultSource != null && response.body().features() != null) {
+                    resultSource.setGeoJson(FeatureCollection.fromFeatures(response.body().features()));
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FeatureCollection> call, Throwable throwable) {
+                Timber.d("Request failed: %s", throwable.getMessage());
+                Toast.makeText(MainActivity.this, R.string.api_error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void creatFeatureList2(){
+        LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
+        Style style = mapboxMap.getStyle();
+        if (style != null) {
+            // Move and display the click center layer's red marker icon to wherever the map was clicked on
+
+            GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_GEOJSON_SOURCE_ID);
+            if (clickLocationSource != null) {
+                clickLocationSource.setGeoJson(Point.fromLngLat(point.getLongitude(), point.getLatitude()));
+            }
+            // Use the map click location to make a Tilequery API call
+            makeTilequeryApiCall2(style, point);
+        }
+    }
+
+    /**
+     * Use the Java SDK's MapboxTilequery class to build a API request and use the API response
+     *
+     * @param point the center point that the the tilequery will originate from.
+     */
+    private void makeTilequeryApiCall2(@NonNull final Style style, @NonNull LatLng point) {
+        MapboxTilequery tilequery = MapboxTilequery.builder()
+                .accessToken(getString(R.string.mapbox_access_token))
+                .mapIds("mapbox.mapbox-streets-v8")
+                .query(Point.fromLngLat(point.getLongitude(), point.getLatitude()))
+                .radius(100)
+                .limit(10)
+                .geometry("point")
+                .dedupe(true)
+                .layers("poi_label")
+                .build();
+
+        tilequery.enqueueCall(new Callback<FeatureCollection>() {
+            @Override
+            public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
+                featureList = response.body().features();
+                //TODO GET "What's there point" method/class
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
                 speak(null,new NearPoints(featureList).getClosestFeatureName());
 
