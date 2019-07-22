@@ -193,10 +193,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
-                curentLocation.getBearing();
+                toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
+
+                /*curentLocation.getBearing();
                 creatFeatureList();
-                toastMSG(String.valueOf(featureList.size()));
+                toastMSG(String.valueOf(featureList.size()));*/
+                //System.out.println(address(24.16046938892441, 56.970773669248075));
             }
         });
 
@@ -668,7 +670,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (result.get(0).contains(commands[0])) {
                     Toast.makeText(getApplicationContext(), commands[0], Toast.LENGTH_SHORT).show();
-                    speak(null,address());
+                    speak(null,address(curentLocation.getLongitude(), curentLocation.getLatitude()));
                 } else if (result.get(0).contains(commands[1]) || result.get(0).contains(commands[2])) {
                     Toast.makeText(getApplicationContext(), commands[1] + " " + commands[2], Toast.LENGTH_SHORT).show();
                     getPOI();
@@ -681,40 +683,74 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         }
     }
 
-    private String address(){
+    private String address(double lon, double lat){
         try {
-            GeoCoding geoCoding = new GeoCoding(curentLocation.getLongitude(), curentLocation.getLatitude());
+            GeoCoding geoCoding = new GeoCoding(lon, lat);
             Map<String,String> addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
             int i = 0;
+
             while (addressAndPOI == null) {
 
-                geoCoding = new GeoCoding(curentLocation.getLongitude()+0.00005, curentLocation.getLatitude()+0.00005);
+                geoCoding = new GeoCoding(curentLocation.getLongitude() + 0.00005, curentLocation.getLatitude() + 0.00005);
                 addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
                 if (i >= 10 && addressAndPOI == null) {
-                    return "Address not found";
-                }
-                i++;
-            }
-            String name = "";
-            String address = "";
-            for (Map.Entry<String,String> pair : addressAndPOI.entrySet()) {
-                if(pair.getKey().equals("name")){
-                    name = pair.getValue();
-                } else if (pair.getKey().equals("address")){
-                    address = pair.getValue();
-                } else{
-                    name = "ERROR";
-                    address = "ERROR";
-                }
-            }
 
-            Toast.makeText(
-                    MainActivity.this,
-                    "Address = " + address + " Name =" + name,
-                    Toast.LENGTH_LONG
-            ).show();
+                    if (addressAndPOI == null) {
+                        final double thetaMax = 6 * Math.PI;
+                        final double awayStep = 0.5 / thetaMax;
+                        final double chord = 0.005;
+                        double theta = chord;
+                        for (; theta <= thetaMax; ) {
+                            double away = awayStep * theta;
+                            double around = theta + 0.0005;
+                            double x = lon + Math.cos(around) * away;
+                            double y = lat + Math.sin(around) * away;
+                            theta += chord / away;
+                            geoCoding = new GeoCoding(x, y);
+                            addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+                            if (addressAndPOI == null) {
+                                continue;
+                            }
+                            break;
+                        }
+                        if (addressAndPOI == null && theta >= thetaMax) {
 
-            return "Address = " + address;
+                            return "Address not found";
+                        }
+
+                /*while (addressAndPOI == null) {
+                    geoCoding = new GeoCoding(lon + 0.00005, lat + 0.00005);
+                    addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+                    if (i >= 10 && addressAndPOI == null) {
+                        return "Address not found";
+                    }
+                    i++;
+                }*/
+                    }
+
+
+                    String name = "";
+                    String address = "";
+                    for (Map.Entry<String, String> pair : addressAndPOI.entrySet()) {
+                        if (pair.getKey().equals("name")) {
+                            name = pair.getValue();
+                        } else if (pair.getKey().equals("address")) {
+                            address = pair.getValue();
+                        } else {
+                            name = "ERROR";
+                            address = "ERROR";
+                        }
+                    }
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Address = " + address + " Name =" + name,
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    return "Address = " + address;
+                }
+            }
         } catch (JSONException e){
             System.err.println(e.getMessage());
             Toast.makeText(
