@@ -7,6 +7,50 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/what_near"
+        android:layout_width="74dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        mapbox:layout_constraintBottom_toBottomOf="@+id/voiceBtn"
+        mapbox:layout_constraintEnd_toStartOf="@+id/voiceBtn"
+        mapbox:layout_constraintHorizontal_bias="0.363"
+        mapbox:layout_constraintStart_toEndOf="@+id/my_address"
+        mapbox:srcCompat="@drawable/map_marker" />
+
+    <ImageView
+        android:id="@+id/what_there"
+        android:layout_width="76dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        mapbox:layout_constraintBottom_toTopOf="@+id/navigationButton"
+        mapbox:layout_constraintEnd_toStartOf="@+id/curLocationButton"
+        mapbox:layout_constraintHorizontal_bias="0.282"
+        mapbox:layout_constraintStart_toEndOf="@+id/voiceBtn"
+        mapbox:srcCompat="@drawable/point" />
+
+    <ImageView
+        android:id="@+id/my_address"
+        android:layout_width="80dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="256dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        mapbox:layout_constraintBottom_toTopOf="@+id/navigationButton"
+        mapbox:layout_constraintEnd_toStartOf="@+id/curLocationButton"
+        mapbox:layout_constraintHorizontal_bias="0.0"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:srcCompat="@drawable/flag" />
+
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -29,67 +73,69 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
         android:enabled="false"
         android:text="@string/start_navigating"
         android:textColor="@color/mapboxGrayLight"
+        mapbox:layout_constraintBottom_toBottomOf="@+id/mapView"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.498"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toTopOf="@+id/mapView" />
+        mapbox:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/textButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
         android:text="Get Addr"
-        mapbox:layout_constraintBottom_toTopOf="@+id/Speak"
-        mapbox:layout_constraintEnd_toStartOf="@+id/curLocationButton"
-        mapbox:layout_constraintHorizontal_bias="0.029"
-        mapbox:layout_constraintStart_toStartOf="parent" />
+        mapbox:layout_constraintEnd_toStartOf="@+id/Speak"
+        mapbox:layout_constraintHorizontal_bias="0.68"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/curLocationButton"
         android:layout_width="33dp"
         android:layout_height="41dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginBottom="80dp"
         android:background="@drawable/location_icon"
         android:drawableStart="@drawable/ic_my_location_black_24dp"
-        mapbox:layout_constraintBottom_toTopOf="@+id/Speak"
-        mapbox:layout_constraintEnd_toEndOf="parent" />
+        mapbox:layout_constraintBottom_toBottomOf="parent"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintHorizontal_bias="1.0"
+        mapbox:layout_constraintStart_toEndOf="@+id/voiceBtn" />
 
     <Button
         android:id="@+id/Speak"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="Test"
-        mapbox:layout_constraintBottom_toBottomOf="@+id/mapView"
         mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent" />
+        mapbox:layout_constraintHorizontal_bias="0.503"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="@+id/mapView" />
 
     <ImageButton
         android:id="@+id/voiceBtn"
-        android:layout_width="93dp"
+        android:layout_width="74dp"
         android:layout_height="73dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_mic"
-        mapbox:layout_constraintBottom_toTopOf="@+id/Speak"
+        mapbox:layout_constraintBottom_toTopOf="@+id/navigationButton"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent" />
 
