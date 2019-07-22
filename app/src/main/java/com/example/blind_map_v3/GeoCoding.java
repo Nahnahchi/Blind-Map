@@ -1,5 +1,7 @@
 package com.example.blind_map_v3;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,23 +55,42 @@ public class GeoCoding {
     }
 
     public Map<String,String> getAdressAndName (String url) throws IOException, JSONException {
-        System.err.println(url);
+        System.out.println(url);
         InputStream is = new URL(url).openStream();
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            System.err.println(jsonText);
+            System.out.println(jsonText);
             /*int adrIndex = jsonText.indexOf("\"address\":\"") + 11;
             int end  = jsonText.indexOf('"',adrIndex);
             int nameIndex = jsonText.indexOf("\"text_en\":\"") + 11;
             int nameEnd = jsonText.indexOf('"',nameIndex);
             String address = jsonText.substring(adrIndex, end);
             String name = jsonText.substring(nameIndex,nameEnd);*/
+            JsonObject obj = new JsonParser().parse(jsonText).getAsJsonObject();
+            System.out.println(obj.toString());
             JSONObject json = new JSONObject(jsonText);
-            String address;
+            String address = null;
             try {
-                address = json.getJSONObject("features").getJSONObject("properties").getString("address");
+                JSONArray features = json.getJSONArray("features");
+                for (int i = 0; i < features.length(); i++) {
+                    JSONObject item = features.getJSONObject(i);
+                    try {
+                        JSONObject properties = item.getJSONObject("properties");
+                        address = properties.getString("address");
+                        System.out.println(address);
+                        break;
+                    } catch (JSONException e) {
+                        continue;
+                    }
+
+                }
+                if (address == null) {
+                    return null;
+                }
+                // address = json.getJSONObject("features").getJSONObject("properties").getString("address");
             } catch (JSONException e) {
+                e.printStackTrace();
                 return null;
             }
             Map<String,String> addressAndName = new HashMap<>();
@@ -85,7 +107,7 @@ public class GeoCoding {
     }
 
     public static void main(String[] args) throws IOException, JSONException {
-        FeatureCollection geoJson = readJsonFromUrl("https://api.mapbox.com/geocoding/v5/mapbox.places/24.11511,%2056.95240.json?types=poi&language=en&access_token=pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw");
+        /*FeatureCollection geoJson = readJsonFromUrl("https://api.mapbox.com/geocoding/v5/mapbox.places/24.11511,%2056.95240.json?types=poi&language=en&access_token=pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw");
         System.out.println(geoJson.toString());
         System.out.println(geoJson.features().size());
         System.out.println(geoJson.features().get(0).getProperty("text"));
@@ -105,7 +127,10 @@ public class GeoCoding {
         String address = d.substring(adrIndex, end);
         System.out.println(address);
         String name = d.substring(nameIndex,nameEnd);
-        System.out.println(name);
+        System.out.println(name);*/
+        GeoCoding g = new GeoCoding(24.121475351614436, 56.95627846464379);
+        String url = g.getURL();
+        System.out.println(g.getAdressAndName(url).toString());
 
     }
 
