@@ -24,6 +24,8 @@ import androidx.core.content.ContextCompat;
 import android.os.StrictMode;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -675,9 +677,9 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null) {
-            final String[] commandsEn = {"address", "places", "interest"};
-            final String[] commandsLv = {"adrese", "interesantas", "vietas"};
-            final String[] commandsRu = {"адрес", "достопримечательности", "места"};
+            final String[] commandsEn = {"address", "what nearest", "what there"};
+            final String[] commandsLv = {"adrese", "kas ir tuvu", "kas tur ir"};
+            final String[] commandsRu = {"адрес", "что рядом", "что там"};
             String[] commands;
             switch(Locale.getDefault().toString()) {
                 case "en_GB":
@@ -695,7 +697,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 }
                 default: {
                     commands = null;
-                    Toast.makeText(getApplicationContext(), "Please set your phone language to EN, RU or LV for voice commands!", Toast.LENGTH_SHORT).show();
+                    commands = commandsEn;
                     break;
                 }
             }
@@ -801,6 +803,28 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             // Use the map click location to make a Tilequery API call
             makeTilequeryApiCall(style, point);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_items, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected( MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.userguide:
+                Toast.makeText(this,"User Guide", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent (MainActivity.this, com.example.blind_map_v3.UserGuide.class);
+                startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
     }
 
 
