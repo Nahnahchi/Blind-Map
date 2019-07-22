@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             public void onClick(View view) {
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                         .directionsRoute(currentRout)
-                        .shouldSimulateRoute(true)
+                        .shouldSimulateRoute(false)
                         .build();
                 NavigationLauncher.startNavigation(MainActivity.this,options);
             }
