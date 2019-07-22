@@ -73,6 +73,8 @@ import java.util.Map;
 import com.mapbox.mapboxsdk.style.layers.CircleLayer;
 import com.mapbox.mapboxsdk.style.sources.VectorSource;
 
+import static com.example.blind_map_v3.Constance.*;
+import static com.example.blind_map_v3.SpeechToTextActivity.*;
 import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
 import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor;
@@ -108,15 +110,7 @@ import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
  */
 public class MainActivity extends AppCompatActivity implements PermissionsListener, OnMapReadyCallback, MapboxMap.OnMapClickListener{
 
-    private static final String SAVED_STATE_CAMERA = "saved_state_camera";
-    private static final String SAVED_STATE_RENDER = "saved_state_render";
-    private static final String SAVED_STATE_LOCATION = "saved_state_location";
-    private static final long DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L;
-    private static final long DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5;
-    private static final String RESULT_GEOJSON_SOURCE_ID = "RESULT_GEOJSON_SOURCE_ID";
-    private static final String CLICK_CENTER_GEOJSON_SOURCE_ID = "CLICK_CENTER_GEOJSON_SOURCE_ID";
-    private static final String CLICK_CENTER_NAVIGATION = "CLICK_CENTER_NAVIGATION";
-    private static final String LAYER_ID = "LAYER_ID";
+
     private MapView mapView;
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -138,23 +132,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private static final String TAG = "MainActivity";
     private DirectionsRoute currentRout;
     private Button speak;
-    private static final int REQUEST_CODE_SPEECH_INPUT = 10;
+
     ImageButton mVoiceBtn;
-
-   // MapboxTilequery tilequery;
-    //private Marker
-
 
     public Location getCurentLocation() {
         return curentLocation;
     }
-
-    @CameraMode.Mode
-    private int cameraMode = CameraMode.TRACKING;
-
-    @RenderMode.Mode
-    private int renderMode = RenderMode.NORMAL;
-
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
@@ -196,12 +179,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         getAddressButton = findViewById(R.id.textButton);
         navigationButton = findViewById(R.id.navigationButton);
         // Check and use saved instance state in case of device rotation
-        if (savedInstanceState != null) {
-            cameraMode = savedInstanceState.getInt(SAVED_STATE_CAMERA);
-            renderMode = savedInstanceState.getInt(SAVED_STATE_RENDER);
-            lastLocation = savedInstanceState.getParcelable(SAVED_STATE_LOCATION);
-            curentLocation = lastLocation;
-        }
+//        if (savedInstanceState != null) {
+//            cameraMode = savedInstanceState.getInt(SAVED_STATE_CAMERA);
+//            renderMode = savedInstanceState.getInt(SAVED_STATE_RENDER);
+//            lastLocation = savedInstanceState.getParcelable(SAVED_STATE_LOCATION);
+//            curentLocation = lastLocation;
+//        }
 
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -210,8 +193,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
+                //toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
                 curentLocation.getBearing();
+                creatFeatureList();
+                FeatureThread featureThread = new FeatureThread(mapboxMap);
+
+
+                toastMSG(String.valueOf(featureList.size()));
             }
         });
 
@@ -234,18 +222,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         getAddressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
-                Style style = mapboxMap.getStyle();
-                if (style != null) {
-                    // Move and display the click center layer's red marker icon to wherever the map was clicked on
+                creatFeatureList();
 
-                    GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_GEOJSON_SOURCE_ID);
-                    if (clickLocationSource != null) {
-                        clickLocationSource.setGeoJson(Point.fromLngLat(point.getLongitude(), point.getLatitude()));
-                    }
-                // Use the map click location to make a Tilequery API call
-                    makeTilequeryApiCall(style, point);
-                }
+//                while (featureList == null){
+//                    System.err.println("NO YET!!!");
+//                }
+
+
             }
         });
 
@@ -518,12 +501,27 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         }
     }
 
+    private void creatFeatureList(){
+        LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
+        Style style = mapboxMap.getStyle();
+        if (style != null) {
+            // Move and display the click center layer's red marker icon to wherever the map was clicked on
+
+            GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_GEOJSON_SOURCE_ID);
+            if (clickLocationSource != null) {
+                clickLocationSource.setGeoJson(Point.fromLngLat(point.getLongitude(), point.getLatitude()));
+            }
+            // Use the map click location to make a Tilequery API call
+            makeTilequeryApiCall(style, point);
+        }
+    }
+
     /**
      * Use the Java SDK's MapboxTilequery class to build a API request and use the API response
      *
      * @param point the center point that the the tilequery will originate from.
      */
-    private void makeTilequeryApiCall(@NonNull final Style style, @NonNull LatLng point) {
+     private void makeTilequeryApiCall(@NonNull final Style style, @NonNull LatLng point) {
         MapboxTilequery tilequery = MapboxTilequery.builder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .mapIds("mapbox.mapbox-streets-v8")
@@ -546,6 +544,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 System.err.println(featureList.size());
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
                 speak(null,new NearPoints(featureList).getClosestFeatureName());
+
                 GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
                 if (resultSource != null && response.body().features() != null) {
                     resultSource.setGeoJson(FeatureCollection.fromFeatures(response.body().features()));
@@ -691,7 +690,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             Map<String,String> addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
             int i = 0;
             while (addressAndPOI == null) {
-                geoCoding = new GeoCoding(curentLocation.getLongitude()+0.00005, curentLocation.getLatitude()+0.0005);
+                geoCoding = new GeoCoding(curentLocation.getLongitude()+0.0005, curentLocation.getLatitude()+0.0005);
                 addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
                 if (i >= 10 && addressAndPOI == null) {
                     return "Address not found";
