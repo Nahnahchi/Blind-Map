@@ -128,7 +128,7 @@ public class GeoCoding {
         System.out.println(address);
         String name = d.substring(nameIndex,nameEnd);
         System.out.println(name);*/
-        GeoCoding g = new GeoCoding(24.121475351614436, 56.95627846464379);
+        GeoCoding g = new GeoCoding(24.16046938892441, 56.970773669248075);
         String url = g.getURL();
         System.out.println(g.getAdressAndName(url).toString());
 
