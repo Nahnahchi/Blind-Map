@@ -51,7 +51,6 @@ public class GeoCoding {
                 "pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw");
     }
 
-
     public Map<String,String> getAdressAndName (String url) throws IOException, JSONException {
         System.err.println(url);
         InputStream is = new URL(url).openStream();
@@ -59,15 +58,22 @@ public class GeoCoding {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
             System.err.println(jsonText);
-            int adrIndex = jsonText.indexOf("\"address\":\"") + 11;
+            /*int adrIndex = jsonText.indexOf("\"address\":\"") + 11;
             int end  = jsonText.indexOf('"',adrIndex);
             int nameIndex = jsonText.indexOf("\"text_en\":\"") + 11;
             int nameEnd = jsonText.indexOf('"',nameIndex);
             String address = jsonText.substring(adrIndex, end);
-            String name = jsonText.substring(nameIndex,nameEnd);
+            String name = jsonText.substring(nameIndex,nameEnd);*/
+            JSONObject json = new JSONObject(jsonText);
+            String address;
+            try {
+                address = json.getJSONObject("features").getJSONObject("properties").getString("address");
+            } catch (JSONException e) {
+                return null;
+            }
             Map<String,String> addressAndName = new HashMap<>();
-            addressAndName.put("address",address);
-            addressAndName.put("name",name);
+            addressAndName.put("address", address);
+            //addressAndName.put("name",name);
 
             //FeatureCollection geoJson = FeatureCollection.fromJson(jsonText);
             //GeometryCollection geometryCollection = GeometryCollection.fromJson(jsonText);

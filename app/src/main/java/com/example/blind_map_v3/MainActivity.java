@@ -688,10 +688,19 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private String address(){
         try {
             GeoCoding geoCoding = new GeoCoding(curentLocation.getLongitude(), curentLocation.getLatitude());
-            Map<String,String> addresAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+            Map<String,String> addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+            int i = 0;
+            while (addressAndPOI == null) {
+                geoCoding = new GeoCoding(curentLocation.getLongitude()+0.00005, curentLocation.getLatitude()+0.0005);
+                addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+                if (i >= 10 && addressAndPOI == null) {
+                    return "Address not found";
+                }
+                i++;
+            }
             String name = "";
             String address = "";
-            for (Map.Entry<String,String> pair : addresAndPOI.entrySet()) {
+            for (Map.Entry<String,String> pair : addressAndPOI.entrySet()) {
                 if(pair.getKey().equals("name")){
                     name = pair.getValue();
                 } else if (pair.getKey().equals("address")){
