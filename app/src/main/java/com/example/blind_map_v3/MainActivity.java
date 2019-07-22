@@ -688,36 +688,27 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             GeoCoding geoCoding = new GeoCoding(lon, lat);
             Map<String,String> addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
             int i = 0;
-
-            while (addressAndPOI == null) {
-
-                geoCoding = new GeoCoding(curentLocation.getLongitude() + 0.00005, curentLocation.getLatitude() + 0.00005);
-                addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
-                if (i >= 10 && addressAndPOI == null) {
-
+            if (addressAndPOI == null) {
+                final double thetaMax = 6 * Math.PI;
+                final double awayStep = 0.5 / thetaMax;
+                final double chord = 0.005;
+                double theta = chord;
+                for (; theta <= thetaMax;) {
+                    double away = awayStep * theta;
+                    double around = theta + 0.0005;
+                    double x = lon + Math.cos(around) * away;
+                    double y = lat + Math.sin(around) * away;
+                    theta += chord / away;
+                    geoCoding = new GeoCoding(x, y);
+                    addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
                     if (addressAndPOI == null) {
-                        final double thetaMax = 6 * Math.PI;
-                        final double awayStep = 0.5 / thetaMax;
-                        final double chord = 0.005;
-                        double theta = chord;
-                        for (; theta <= thetaMax; ) {
-                            double away = awayStep * theta;
-                            double around = theta + 0.0005;
-                            double x = lon + Math.cos(around) * away;
-                            double y = lat + Math.sin(around) * away;
-                            theta += chord / away;
-                            geoCoding = new GeoCoding(x, y);
-                            addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
-                            if (addressAndPOI == null) {
-                                continue;
-                            }
-                            break;
-                        }
-                        if (addressAndPOI == null && theta >= thetaMax) {
-
-                            return "Address not found";
-                        }
-
+                        continue;
+                    }
+                    break;
+                }
+                if (addressAndPOI == null && theta >= thetaMax) {
+                    return "Address not found";
+                }
                 /*while (addressAndPOI == null) {
                     geoCoding = new GeoCoding(lon + 0.00005, lat + 0.00005);
                     addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
@@ -726,31 +717,27 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                     }
                     i++;
                 }*/
-                    }
-
-
-                    String name = "";
-                    String address = "";
-                    for (Map.Entry<String, String> pair : addressAndPOI.entrySet()) {
-                        if (pair.getKey().equals("name")) {
-                            name = pair.getValue();
-                        } else if (pair.getKey().equals("address")) {
-                            address = pair.getValue();
-                        } else {
-                            name = "ERROR";
-                            address = "ERROR";
-                        }
-                    }
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            "Address = " + address + " Name =" + name,
-                            Toast.LENGTH_LONG
-                    ).show();
-
-                    return "Address = " + address;
+            }
+            String name = "";
+            String address = "";
+            for (Map.Entry<String,String> pair : addressAndPOI.entrySet()) {
+                if(pair.getKey().equals("name")){
+                    name = pair.getValue();
+                } else if (pair.getKey().equals("address")){
+                    address = pair.getValue();
+                } else{
+                    name = "ERROR";
+                    address = "ERROR";
                 }
             }
+
+            Toast.makeText(
+                    MainActivity.this,
+                    "Address = " + address + " Name =" + name,
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return "Address = " + address;
         } catch (JSONException e){
             System.err.println(e.getMessage());
             Toast.makeText(
