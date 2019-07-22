@@ -687,7 +687,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         try {
             GeoCoding geoCoding = new GeoCoding(lon, lat);
             Map<String,String> addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
-            int i = 0;
             if (addressAndPOI == null) {
                 final double thetaMax = 6 * Math.PI;
                 final double awayStep = 0.5 / thetaMax;
