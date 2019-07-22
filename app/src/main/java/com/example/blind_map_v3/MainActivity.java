@@ -688,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             int i = 0;
             while (addressAndPOI == null) {
 
-                geoCoding = new GeoCoding(curentLocation.getLongitude()+0.000005, curentLocation.getLatitude()+0.000005);
+                geoCoding = new GeoCoding(curentLocation.getLongitude()+0.00005, curentLocation.getLatitude()+0.00005);
                 addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
                 if (i >= 10 && addressAndPOI == null) {
                     return "Address not found";
