@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class Speaker {
@@ -74,7 +76,21 @@ public class Speaker {
 
     // Pass string of text to be spoken
     private void speak(String toSpeak) {
-        t2s.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+        boolean wasDigit = false;
+        StringBuilder words = new StringBuilder();
+        for (char ch : toSpeak.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                wasDigit = true;
+                words.append(ch);
+            }  else {
+                if (wasDigit) {
+                    words.append(" ");
+                    wasDigit = false;
+                }
+                words.append(ch);
+            }
+        }
+        t2s.speak(words.toString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 
     static void onPause() {

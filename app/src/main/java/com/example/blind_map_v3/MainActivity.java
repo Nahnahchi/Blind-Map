@@ -9,6 +9,7 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
+
 import android.location.Location;
 import android.os.Bundle;
 
@@ -92,7 +93,7 @@ import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 /**
  * Use the LocationLayerOptions class to customize the LocationComponent's device location icon.
  */
-public class MainActivity extends AppCompatActivity implements PermissionsListener, OnMapReadyCallback, MapboxMap.OnMapClickListener{
+public class MainActivity extends AppCompatActivity implements PermissionsListener, OnMapReadyCallback, MapboxMap.OnMapClickListener {
 
 
     private MapView mapView;
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             public void onClick(View view) {
 
                 CameraPosition position = new CameraPosition.Builder()
-                        .target(new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude())) // Sets the new camera position
+                        .target(new LatLng(curentLocation.getLatitude(), curentLocation.getLongitude())) // Sets the new camera position
                         .zoom(18) // Sets the zoom
                         .bearing(curentLocation.getBearing()) // Rotate the camera
                         .tilt(50) // Set the camera tilt
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                         .directionsRoute(currentRout)
                         .shouldSimulateRoute(false)
                         .build();
-                NavigationLauncher.startNavigation(MainActivity.this,options);
+                NavigationLauncher.startNavigation(MainActivity.this, options);
             }
         });
 
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onClick(View view) {
                 toastMSG(address(curentLocation.getLongitude(), curentLocation.getLatitude()));
-                speak(null,address(curentLocation.getLongitude(), curentLocation.getLatitude()));
+                speak(null, address(curentLocation.getLongitude(), curentLocation.getLatitude()));
             }
         });
 
@@ -241,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onClick(View view) {
                 toastMSG("HAHAHAHA");
-                
+
                 Style style = mapboxMap.getStyle();
                 if (style != null) {
 // Move and display the click center layer's red marker icon to wherever the map was clicked on
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
     }
 
-    @SuppressWarnings( {"MissingPermission"})
+    @SuppressWarnings({"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
@@ -406,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             }
         }
     }
+
     /**
      * Set up the LocationEngine and the parameters for querying the device's location
      */
@@ -436,12 +438,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
 // Use the map click location to make a Tilequery API call
             //makeTilequeryApiCall(style, point);
-            destinationPosition = Point.fromLngLat(point.getLongitude(),point.getLatitude());
+            destinationPosition = Point.fromLngLat(point.getLongitude(), point.getLatitude());
             navigationButton.setEnabled(true);
-            navigationButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.mapboxBlueDark));
+            navigationButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.mapboxBlueDark));
             navigationButton.setVisibility(View.VISIBLE);
             cancelNavigatin.setVisibility(View.VISIBLE);
-            getRoute(Point.fromLngLat(curentLocation.getLongitude(),curentLocation.getLatitude()),destinationPosition);
+            getRoute(Point.fromLngLat(curentLocation.getLongitude(), curentLocation.getLatitude()), destinationPosition);
 
             return true;
         }
@@ -450,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
     }
 
-    private void getRoute(Point origin, Point destination){
+    private void getRoute(Point origin, Point destination) {
         NavigationRoute.builder(this)
                 .accessToken(Mapbox.getAccessToken())
                 .origin(origin)
@@ -459,19 +461,19 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                        if(response.body() == null){
-                            Log.e(TAG,"No routes found, check right user and accesss token");
+                        if (response.body() == null) {
+                            Log.e(TAG, "No routes found, check right user and accesss token");
                             return;
-                        } else if(response.body().routes().size() == 0){
-                            Log.e(TAG,"No routes found");
+                        } else if (response.body().routes().size() == 0) {
+                            Log.e(TAG, "No routes found");
                             toastMSG("No routes found");
                             return;
                         }
                         currentRout = response.body().routes().get(0);
-                        if(navigationMapRoute != null){
+                        if (navigationMapRoute != null) {
                             navigationMapRoute.updateRouteArrowVisibilityTo(false);
                             navigationMapRoute.updateRouteVisibilityTo(false);
-                            } else{
+                        } else {
                             navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap);
                         }
                         navigationMapRoute.addRoute(currentRout);
@@ -479,13 +481,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
                     @Override
                     public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-                            Log.e(TAG,"Error: " + t.getMessage());
+                        Log.e(TAG, "Error: " + t.getMessage());
                     }
                 });
     }
 
-    private void creatFeatureList(){
-        LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
+    private void creatFeatureList() {
+        LatLng point = new LatLng(curentLocation.getLatitude(), curentLocation.getLongitude());
         Style style = mapboxMap.getStyle();
         if (style != null) {
             // Move and display the click center layer's red marker icon to wherever the map was clicked on
@@ -504,7 +506,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
      *
      * @param point the center point that the the tilequery will originate from.
      */
-     private void makeTilequeryApiCall(@NonNull final Style style, @NonNull LatLng point) {
+    private void makeTilequeryApiCall(@NonNull final Style style, @NonNull LatLng point) {
         MapboxTilequery tilequery = MapboxTilequery.builder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .mapIds("mapbox.mapbox-streets-v8")
@@ -520,13 +522,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
                 //tilequeryResponseTextView.setText(response.body().toJson());
-               System.err.println(response.body().toString());
+                System.err.println(response.body().toString());
                 System.err.println(response.body().features().get(0).getProperty("name"));
                 System.err.println(response.body().features().get(0).getProperty("tilequery"));
                 featureList = response.body().features();
                 System.err.println(featureList.size());
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
-                speak(null,new NearPoints(featureList).getClosestFeatureName());
+                speak(null, new NearPoints(featureList).getClosestFeatureName());
 
                 GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
                 if (resultSource != null && response.body().features() != null) {
@@ -543,8 +545,8 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         });
     }
 
-    private void creatFeatureList2(){
-        LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
+    private void creatFeatureList2() {
+        LatLng point = new LatLng(curentLocation.getLatitude(), curentLocation.getLongitude());
         Style style = mapboxMap.getStyle();
         if (style != null) {
             // Move and display the click center layer's red marker icon to wherever the map was clicked on
@@ -581,7 +583,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 featureList = response.body().features();
                 //TODO GET "What's there point" method/class
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
-                speak(null,new NearPoints(featureList).getClosestFeatureName());
+                speak(null, new NearPoints(featureList).getClosestFeatureName());
 
                 GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
                 if (resultSource != null && response.body().features() != null) {
@@ -608,11 +610,11 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 MainActivity.this.getResources(), R.drawable.green_marker));
 
         loadedMapStyle.addSource(new GeoJsonSource(CLICK_CENTER_GEOJSON_SOURCE_ID,
-                FeatureCollection.fromFeatures(new Feature[] {})));
+                FeatureCollection.fromFeatures(new Feature[]{})));
 
         loadedMapStyle.addLayer(new SymbolLayer("click-layer", CLICK_CENTER_GEOJSON_SOURCE_ID).withProperties(
                 iconImage("CLICK-ICON-ID"),
-                iconOffset(new Float[] {0f, -12f}),
+                iconOffset(new Float[]{0f, -12f}),
                 iconIgnorePlacement(true),
                 iconAllowOverlap(true)
         ));
@@ -623,11 +625,11 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 MainActivity.this.getResources(), R.drawable.purple_marker));
 
         loadedMapStyle.addSource(new GeoJsonSource(CLICK_CENTER_NAVIGATION,
-                FeatureCollection.fromFeatures(new Feature[] {})));
+                FeatureCollection.fromFeatures(new Feature[]{})));
 
         loadedMapStyle.addLayer(new SymbolLayer("click-layer-navig", CLICK_CENTER_NAVIGATION).withProperties(
                 iconImage("CLICK-ICON-ID-2"),
-                iconOffset(new Float[] {0f, -12f}),
+                iconOffset(new Float[]{0f, -12f}),
                 iconIgnorePlacement(true),
                 iconAllowOverlap(true)
         ));
@@ -643,22 +645,22 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
 // Retrieve GeoJSON information from the Mapbox Tilequery API
         loadedMapStyle.addSource(new GeoJsonSource(RESULT_GEOJSON_SOURCE_ID,
-                FeatureCollection.fromFeatures(new Feature[] {})));
+                FeatureCollection.fromFeatures(new Feature[]{})));
 
         loadedMapStyle.addLayer(new SymbolLayer(LAYER_ID, RESULT_GEOJSON_SOURCE_ID).withProperties(
                 iconImage("RESULT-ICON-ID"),
-                iconOffset(new Float[] {0f, -12f}),
+                iconOffset(new Float[]{0f, -12f}),
                 iconIgnorePlacement(true),
                 iconAllowOverlap(true)
         ));
     }
 
-    private void toastMSG(String string){
+    private void toastMSG(String string) {
         Toast.makeText(
-                  MainActivity.this,
-                   string,
-                    Toast.LENGTH_LONG
-                    ).show();
+                MainActivity.this,
+                string,
+                Toast.LENGTH_LONG
+        ).show();
     }
 
     private void speakToMic() {
@@ -685,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             final String[] commandsLv = {"adrese", "kas ir tuvu", "kas tur ir"};
             final String[] commandsRu = {"адрес", "что рядом", "что там"};
             String[] commands;
-            switch(Locale.getDefault().toString()) {
+            switch (Locale.getDefault().toString()) {
                 case "en_GB":
                 case "en_US": {
                     commands = commandsEn;
@@ -705,11 +707,11 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                     break;
                 }
             }
-            if(commands != null) {
+            if (commands != null) {
                 ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (result.get(0).contains(commands[0])) {
                     Toast.makeText(getApplicationContext(), commands[0], Toast.LENGTH_SHORT).show();
-                    speak(null,address(curentLocation.getLongitude(), curentLocation.getLatitude()));
+                    speak(null, address(curentLocation.getLongitude(), curentLocation.getLatitude()));
                 } else if (result.get(0).contains(commands[1]) || result.get(0).contains(commands[2])) {
                     Toast.makeText(getApplicationContext(), commands[1] + " " + commands[2], Toast.LENGTH_SHORT).show();
                     getPOI();
@@ -722,7 +724,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         }
     }
 
-    private String address(double lon, double lat){
+    private String address(double lon, double lat) {
         try {
             GeoCoding geoCoding = new GeoCoding(lon, lat);
             String address = geoCoding.getAddress(geoCoding.getURL());
@@ -731,7 +733,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 final double awayStep = 0.5 / thetaMax;
                 final double chord = 0.005;
                 double theta = chord;
-                for (; theta <= thetaMax;) {
+                for (; theta <= thetaMax; ) {
                     double away = awayStep * theta;
                     double around = theta + 0.0005;
                     double x = lon + Math.cos(around) * away;
@@ -751,14 +753,14 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
             return "Your Address " + address;
 
-        } catch (JSONException e){
+        } catch (JSONException e) {
             System.err.println(e.getMessage());
             Toast.makeText(
                     MainActivity.this,
                     "JSON " + e.getMessage(),
                     Toast.LENGTH_LONG
             ).show();
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.err.println(e.getMessage());
             Toast.makeText(
                     MainActivity.this,
@@ -769,8 +771,8 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         return null;
     }
 
-    private void getPOI(){
-        LatLng point = new LatLng(curentLocation.getLatitude(),curentLocation.getLongitude());
+    private void getPOI() {
+        LatLng point = new LatLng(curentLocation.getLatitude(), curentLocation.getLongitude());
         Style style = mapboxMap.getStyle();
         if (style != null) {
             // Move and display the click center layer's red marker icon to wherever the map was clicked on
@@ -791,12 +793,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     }
 
     @Override
-    public boolean onOptionsItemSelected( MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.userguide:
-                Toast.makeText(this,"User Guide", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent (MainActivity.this, com.example.blind_map_v3.UserGuide.class);
+                Toast.makeText(this, "User Guide", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(MainActivity.this, com.example.blind_map_v3.UserGuide.class);
                 startActivity(i);
                 return true;
             default:
