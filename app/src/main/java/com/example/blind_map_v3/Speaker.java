@@ -79,7 +79,7 @@ public class Speaker {
         boolean wasDigit = false;
         StringBuilder words = new StringBuilder();
         for (char ch : toSpeak.toCharArray()) {
-            if (Character.isDigit(ch)) {
+            if (Character.isDigit(ch) || ch == '-') {
                 wasDigit = true;
                 words.append(ch);
             }  else {
