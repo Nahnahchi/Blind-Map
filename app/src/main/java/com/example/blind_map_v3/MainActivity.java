@@ -241,8 +241,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         cancelNavigatin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toastMSG("HAHAHAHA");
-
                 Style style = mapboxMap.getStyle();
                 style.removeLayer("click-layer-navig");
                 style.removeSource(CLICK_CENTER_NAVIGATION);
