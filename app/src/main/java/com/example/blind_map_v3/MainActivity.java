@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     ImageButton whatsNear;
     ImageButton whatsThere;
 
-    ImageButton mVoiceBtn2;
+    ImageButton cancelNavigatin;
 
     public Location getCurentLocation() {
         return curentLocation;
@@ -233,6 +233,23 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        cancelNavigatin = findViewById(R.id.close);
+        cancelNavigatin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toastMSG("HAHAHAHA");
+                
+                Style style = mapboxMap.getStyle();
+                if (style != null) {
+// Move and display the click center layer's red marker icon to wherever the map was clicked on
+                    GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_NAVIGATION);
+                    style.removeLayer(CLICK_CENTER_NAVIGATION);
+
+
+                }
             }
         });
     }
@@ -423,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             navigationButton.setEnabled(true);
             navigationButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.mapboxBlueDark));
             navigationButton.setVisibility(View.VISIBLE);
+            cancelNavigatin.setVisibility(View.VISIBLE);
             getRoute(Point.fromLngLat(curentLocation.getLongitude(),curentLocation.getLatitude()),destinationPosition);
 
             return true;
