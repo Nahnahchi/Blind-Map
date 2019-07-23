@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         whatsThere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                creatFeatureList2();
             }
         });
 
@@ -521,9 +521,14 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
                 //tilequeryResponseTextView.setText(response.body().toJson());
                 System.err.println(response.body().toString());
-                System.err.println(response.body().features().get(0).getProperty("name"));
-                System.err.println(response.body().features().get(0).getProperty("tilequery"));
+                //System.err.println(response.body().features().get(1).getProperty("name"));
+                System.err.println(response.body().features().get(0).getStringProperty("coordinates"));
+                System.err.println(response.body().features().get(1).getStringProperty("coordinates"));
+                System.err.println(response.body().features().get(2).getStringProperty("coordinates"));
+                System.err.println(response.body().features().get(3).getStringProperty("coordinates"));
                 featureList = response.body().features();
+                Point p = (Point) featureList.get(2).geometry();
+                System.err.println(p.latitude() + " " + p.longitude());
                 System.err.println(featureList.size());
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
                 speak(null, new NearPoints(featureList).getClosestFeatureName());
@@ -580,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
                 featureList = response.body().features();
                 //TODO GET "What's there point" method/class
-                toastMSG(new NearPoints(featureList).getClosestFeatureName());
+                toastMSG(new Orientation(curentLocation,featureList,locationComponent.getCompassEngine().getLastHeading()).getOrientationPoint());
                 speak(null, new NearPoints(featureList).getClosestFeatureName());
 
                 GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
