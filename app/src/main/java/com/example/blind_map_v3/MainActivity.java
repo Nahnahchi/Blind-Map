@@ -124,17 +124,20 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             new LocationChangeListeningActivityLocationCallback(this);
     private Point originPosition;
     private Point destinationPosition;
-    private Button curLocationCamera;
-    private Button getAddressButton; //TODO only for test
+    private ImageButton curLocationCamera;
     private Button navigationButton;
     private TextView tilequeryResponseTextView;
     private List<Feature> featureList;
     private NavigationMapRoute navigationMapRoute;
     private static final String TAG = "MainActivity";
     private DirectionsRoute currentRout;
-    private Button speak;
 
     ImageButton mVoiceBtn;
+    ImageButton myAddress;
+    ImageButton whatsNear;
+    ImageButton whatsThere;
+
+    ImageButton mVoiceBtn2;
 
     public Location getCurentLocation() {
         return curentLocation;
@@ -177,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
         mapView = findViewById(R.id.mapView);
         curLocationCamera = findViewById(R.id.curLocationButton);
-        getAddressButton = findViewById(R.id.textButton);
         navigationButton = findViewById(R.id.navigationButton);
         // Check and use saved instance state in case of device rotation
 //        if (savedInstanceState != null) {
@@ -190,18 +192,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        speak = findViewById(R.id.Speak);
-        speak.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toastMSG(String.format("Heading %.3f Bearing %.3f",locationComponent.getCompassEngine().getLastHeading(), curentLocation.getBearing()*100000));
-
-                /*curentLocation.getBearing();
-                creatFeatureList();
-                toastMSG(String.valueOf(featureList.size()));*/
-                //System.out.println(address(24.16046938892441, 56.970773669248075));
-            }
-        });
 
         curLocationCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,19 +206,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
                 mapboxMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(position), 7000);
-            }
-        });
-
-        getAddressButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                creatFeatureList();
-
-//                while (featureList == null){
-//                    System.err.println("NO YET!!!");
-//                }
-
-
             }
         });
 
@@ -248,6 +225,32 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onClick(View view) {
                 speakToMic();
+            }
+        });
+
+
+        myAddress = findViewById(R.id.my_address);
+        myAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toastMSG(address(curentLocation.getLongitude(), curentLocation.getLatitude()));
+                speak(null,address(curentLocation.getLongitude(), curentLocation.getLatitude()));
+            }
+        });
+
+        whatsNear = findViewById(R.id.what_near);
+        whatsNear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                creatFeatureList();
+            }
+        });
+
+        whatsThere = findViewById(R.id.what_there);
+        whatsThere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
@@ -437,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             destinationPosition = Point.fromLngLat(point.getLongitude(),point.getLatitude());
             navigationButton.setEnabled(true);
             navigationButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.mapboxBlueDark));
+            navigationButton.setVisibility(View.VISIBLE);
             getRoute(Point.fromLngLat(curentLocation.getLongitude(),curentLocation.getLatitude()),destinationPosition);
 
             return true;
@@ -766,13 +770,8 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 }
             }
 
-            Toast.makeText(
-                    MainActivity.this,
-                    "Address = " + address + " Name =" + name,
-                    Toast.LENGTH_LONG
-            ).show();
+            return "Your Address " + address;
 
-            return "Address = " + address;
         } catch (JSONException e){
             System.err.println(e.getMessage());
             Toast.makeText(
