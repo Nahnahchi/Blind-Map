@@ -720,9 +720,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 if (result.get(0).contains(commands[0])) {
                     Toast.makeText(getApplicationContext(), commands[0], Toast.LENGTH_SHORT).show();
                     speak(null, address(curentLocation.getLongitude(), curentLocation.getLatitude()));
-                } else if (result.get(0).contains(commands[1]) || result.get(0).contains(commands[2])) {
+                } else if (result.get(0).contains(commands[1])) {
                     Toast.makeText(getApplicationContext(), commands[1] + " " + commands[2], Toast.LENGTH_SHORT).show();
                     getPOI();
+                } else if (result.get(0).contains(commands[2])) {
+                    Toast.makeText(getApplicationContext(), commands[2], Toast.LENGTH_SHORT).show();
+                    creatFeatureList2();
                 } else {
                     Toast.makeText(getApplicationContext(), "Wrong command!", Toast.LENGTH_SHORT).show();
                 }
