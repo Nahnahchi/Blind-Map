@@ -710,12 +710,12 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             Map<String,String> addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
             if (addressAndPOI == null) {
                 final double thetaMax = 6 * Math.PI;
-                final double awayStep = 0.5 / thetaMax;
-                final double chord = 0.005;
+                final double awayStep = 0.005 / thetaMax;
+                final double chord = 0.0005;
                 double theta = chord;
                 for (; theta <= thetaMax;) {
                     double away = awayStep * theta;
-                    double around = theta + 0.0005;
+                    double around = theta + 0.00005;
                     double x = lon + Math.cos(around) * away;
                     double y = lat + Math.sin(around) * away;
                     theta += chord / away;
