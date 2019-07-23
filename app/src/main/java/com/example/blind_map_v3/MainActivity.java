@@ -241,16 +241,13 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         cancelNavigatin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toastMSG("HAHAHAHA");
-
                 Style style = mapboxMap.getStyle();
-                if (style != null) {
-// Move and display the click center layer's red marker icon to wherever the map was clicked on
-                    GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_NAVIGATION);
-                    style.removeLayer(CLICK_CENTER_NAVIGATION);
-
-
-                }
+                style.removeLayer("click-layer-navig");
+                style.removeSource(CLICK_CENTER_NAVIGATION);
+                navigationMapRoute.updateRouteArrowVisibilityTo(false);
+                navigationMapRoute.updateRouteVisibilityTo(false);
+                navigationButton.setVisibility(View.INVISIBLE);
+                cancelNavigatin.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -268,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         enableLocationComponent(style);
-                        addClickLayer2(style);
+                        //addClickLayer2(style);
                         addResultLayer(style);
                         mapboxMap.addOnMapClickListener(MainActivity.this);
                     }
@@ -429,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 // Toast instructing user to tap on the map
 
         Style style = mapboxMap.getStyle();
+        addClickLayer2(style);
         if (style != null) {
 // Move and display the click center layer's red marker icon to wherever the map was clicked on
             GeoJsonSource clickLocationSource = style.getSourceAs(CLICK_CENTER_NAVIGATION);
