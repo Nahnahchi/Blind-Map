@@ -80,18 +80,17 @@ public class Orientation {
 
 
                 //TODO compare features's angle and last heading angle
-                double actualDifference = Math.abs(lastHeading-angle);
+                double difference = Math.abs(lastHeading-angle);
                 //get the smallest angle
-                double normalDifference;
 
-                if (actualDifference>180){
-                    normalDifference=360-actualDifference;
+                if (difference>180){
+                    difference=360-difference;
                 }
 
-                System.err.println("difference  " + String.valueOf(actualDifference));
+                System.err.println("difference  " + String.valueOf(difference));
 
 
-                if (actualDifference <= 20) {
+                if (difference <= 20) {
                     // TODO save feature's data if is suitable
                     //distance
                     int distance;
@@ -106,27 +105,10 @@ public class Orientation {
                     //name
                     String name = f.getStringProperty("name");
 
-                    suitable = (String.format("%s %s Distance %d meters", name, type, distance)+" the angle is: " + difference);
+                    suitable = (String.format("%s %s Distance %d meters", name, type, distance) + " the angle is: " + difference);
                     return suitable;
 
-                } else if (difference<=90 && difference >20){
-                    //right
-
-                } else if (difference>90 && difference <= 160){
-                    // backright
-
-                } else if (difference >160 && difference <= 200){
-                    //back
-
-                }else if (difference >200 && difference <= 270){
-                    //backleft
-
-                }else if (difference >270 && difference <= 270){
-                    //backleft
-
                 }
-
-
 
                 else {
                     //suitable = ("within 15 degrees nothing found");

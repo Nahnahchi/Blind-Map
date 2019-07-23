@@ -589,9 +589,9 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             @Override
             public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
                 featureList = response.body().features();
-                //TODO GET "What's there point" method/class
-                toastMSG(new Orientation(curentLocation,featureList,locationComponent.getCompassEngine().getLastHeading()).getOrientationPoint());
-                speak(null, new NearPoints(featureList).getClosestFeatureName());
+                String msg = new Orientation(curentLocation,featureList,locationComponent.getCompassEngine().getLastHeading()).getOrientationPoint();
+                toastMSG(msg);
+                speak(null, msg);
 
                 GeoJsonSource resultSource = style.getSourceAs(RESULT_GEOJSON_SOURCE_ID);
                 if (resultSource != null && response.body().features() != null) {
