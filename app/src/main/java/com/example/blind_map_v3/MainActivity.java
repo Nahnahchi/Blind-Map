@@ -132,6 +132,11 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
