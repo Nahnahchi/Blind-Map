@@ -725,47 +725,27 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private String address(double lon, double lat){
         try {
             GeoCoding geoCoding = new GeoCoding(lon, lat);
-            Map<String,String> addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
-            if (addressAndPOI == null) {
+            String address = geoCoding.getAddress(geoCoding.getURL());
+            if (address == null) {
                 final double thetaMax = 6 * Math.PI;
-                final double awayStep = 0.005 / thetaMax;
-                final double chord = 0.0005;
+                final double awayStep = 0.5 / thetaMax;
+                final double chord = 0.005;
                 double theta = chord;
                 for (; theta <= thetaMax;) {
                     double away = awayStep * theta;
-                    double around = theta + 0.00005;
+                    double around = theta + 0.0005;
                     double x = lon + Math.cos(around) * away;
                     double y = lat + Math.sin(around) * away;
                     theta += chord / away;
                     geoCoding = new GeoCoding(x, y);
-                    addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
-                    if (addressAndPOI == null) {
+                    address = geoCoding.getAddress(geoCoding.getURL());
+                    if (address == null) {
                         continue;
                     }
                     break;
                 }
-                if (addressAndPOI == null && theta >= thetaMax) {
+                if (address == null && theta >= thetaMax) {
                     return "Address not found";
-                }
-                /*while (addressAndPOI == null) {
-                    geoCoding = new GeoCoding(lon + 0.00005, lat + 0.00005);
-                    addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
-                    if (i >= 10 && addressAndPOI == null) {
-                        return "Address not found";
-                    }
-                    i++;
-                }*/
-            }
-            String name = "";
-            String address = "";
-            for (Map.Entry<String,String> pair : addressAndPOI.entrySet()) {
-                if(pair.getKey().equals("name")){
-                    name = pair.getValue();
-                } else if (pair.getKey().equals("address")){
-                    address = pair.getValue();
-                } else{
-                    name = "ERROR";
-                    address = "ERROR";
                 }
             }
 

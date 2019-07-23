@@ -49,7 +49,7 @@ public class GeoCoding {
                 "pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw");
     }
 
-    public Map<String,String> getAddress(String url) throws IOException, JSONException {
+    public String getAddress(String url) throws IOException, JSONException {
         System.out.println(url);
         InputStream is = new URL(url).openStream();
         try {
@@ -88,14 +88,14 @@ public class GeoCoding {
                 e.printStackTrace();
                 return null;
             }
-            Map<String,String> addressAndName = new HashMap<>();
-            addressAndName.put("address", address);
+            //Map<String,String> addressAndName = new HashMap<>();
+            //addressAndName.put("address", address);
             //addressAndName.put("name",name);
 
             //FeatureCollection geoJson = FeatureCollection.fromJson(jsonText);
             //GeometryCollection geometryCollection = GeometryCollection.fromJson(jsonText);
             //JSONObject json = new JSONObject(jsonText);
-            return addressAndName;
+            return address;
         } finally {
             is.close();
         }
