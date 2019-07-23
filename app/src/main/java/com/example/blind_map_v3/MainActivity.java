@@ -1,11 +1,8 @@
 package com.example.blind_map_v3;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 //import android.support.design.widget.Snackbar;
 
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
@@ -15,7 +12,6 @@ import com.mapbox.geojson.Point;
 import android.location.Location;
 import android.os.Bundle;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,12 +35,8 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 //import com.mapbox.android.core.R;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.LocationComponentOptions;
-import com.mapbox.mapboxsdk.location.OnCameraTrackingChangedListener;
-import com.mapbox.mapboxsdk.location.OnLocationClickListener;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -59,7 +51,6 @@ import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.api.tilequery.MapboxTilequery;
 
@@ -72,22 +63,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.mapbox.mapboxsdk.style.layers.CircleLayer;
-import com.mapbox.mapboxsdk.style.sources.VectorSource;
-
 import static com.example.blind_map_v3.Constance.*;
-import static com.example.blind_map_v3.SpeechToTextActivity.*;
-import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
-import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleOpacity;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.exponential;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.get;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.interpolate;
-import static com.mapbox.mapboxsdk.style.expressions.Expression.stop;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.heatmapWeight;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -100,7 +83,6 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
@@ -725,7 +707,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private String address(double lon, double lat){
         try {
             GeoCoding geoCoding = new GeoCoding(lon, lat);
-            Map<String,String> addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+            Map<String,String> addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
             if (addressAndPOI == null) {
                 final double thetaMax = 6 * Math.PI;
                 final double awayStep = 0.5 / thetaMax;
@@ -738,7 +720,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                     double y = lat + Math.sin(around) * away;
                     theta += chord / away;
                     geoCoding = new GeoCoding(x, y);
-                    addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+                    addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
                     if (addressAndPOI == null) {
                         continue;
                     }
@@ -749,7 +731,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 }
                 /*while (addressAndPOI == null) {
                     geoCoding = new GeoCoding(lon + 0.00005, lat + 0.00005);
-                    addressAndPOI = geoCoding.getAdressAndName(geoCoding.getURL());
+                    addressAndPOI = geoCoding.getAddress(geoCoding.getURL());
                     if (i >= 10 && addressAndPOI == null) {
                         return "Address not found";
                     }
