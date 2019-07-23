@@ -2,11 +2,7 @@ package com.example.blind_map_v3;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Point;
-import com.mapbox.geojson.GeometryCollection;
-
 
 
 import java.io.BufferedReader;
@@ -17,7 +13,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -54,7 +49,7 @@ public class GeoCoding {
                 "pk.eyJ1IjoiY29sbG9zIiwiYSI6ImNqeHlzbHZ5ajBjcmUzbW12aHozYWt3ZmwifQ.zqNqUIWpn6uppaykzZY4Qw");
     }
 
-    public Map<String,String> getAdressAndName (String url) throws IOException, JSONException {
+    public Map<String,String> getAddress(String url) throws IOException, JSONException {
         System.out.println(url);
         InputStream is = new URL(url).openStream();
         try {
@@ -130,7 +125,7 @@ public class GeoCoding {
         System.out.println(name);*/
         GeoCoding g = new GeoCoding(24.16046938892441, 56.970773669248075);
         String url = g.getURL();
-        System.out.println(g.getAdressAndName(url).toString());
+        System.out.println(g.getAddress(url).toString());
 
     }
 
