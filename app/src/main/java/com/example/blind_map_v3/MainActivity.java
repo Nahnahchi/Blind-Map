@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.os.Handler;
 import android.os.StrictMode;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -95,7 +96,7 @@ import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
  */
 public class MainActivity extends AppCompatActivity implements PermissionsListener, OnMapReadyCallback, MapboxMap.OnMapClickListener {
 
-
+    private static boolean isStarted = false;
     private MapView mapView;
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -156,15 +157,35 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        setContentView(R.layout.activity_splash_screen);
+
+        if(!isStarted) {
+            isStarted = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(MainActivity.this, SplashScreen.class);
+                    startActivity(i);
+                    finish();
+                }
+            }, 1);
+        }
+
 
         super.onCreate(savedInstanceState);
+
+
 
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
         // This contains the MapView in XML and needs to be called after the access token is configured.
+
+
         setContentView(R.layout.activity_main);
+
+
 
         mapView = findViewById(R.id.mapView);
         curLocationCamera = findViewById(R.id.curLocationButton);
