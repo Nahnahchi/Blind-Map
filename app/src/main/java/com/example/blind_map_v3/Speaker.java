@@ -84,7 +84,7 @@ public class Speaker {
                 words.append(ch);
             }  else {
                 if (wasDigit) {
-                    words.append(" ");
+                    words.append("|");
                     wasDigit = false;
                 }
                 words.append(ch);
