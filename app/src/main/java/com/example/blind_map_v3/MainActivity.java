@@ -452,6 +452,8 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 // Toast instructing user to tap on the map
 
         Style style = mapboxMap.getStyle();
+        style.removeLayer("click-layer-navig");
+        style.removeSource(CLICK_CENTER_NAVIGATION);
         addClickLayer2(style);
         if (style != null) {
 // Move and display the click center layer's red marker icon to wherever the map was clicked on

@@ -33,7 +33,7 @@ public class NearPoints {
     }
 
     private String getFeatureType(Feature feature){
-        String type = feature.getStringProperty("class");
+        String type = feature.getStringProperty("category_en");
 
         if(type == null){
             return "";
