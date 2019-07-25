@@ -13,6 +13,7 @@ import java.util.Locale;
 
 public class Speaker {
 
+    private static boolean lock = false;
     private static TextToSpeech t2s; // Text to speech
 
     // Init object
