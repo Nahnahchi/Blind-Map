@@ -9,11 +9,15 @@
 
     <ImageButton
         android:id="@+id/voiceBtn"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="127dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="147dp"
+        android:layout_marginEnd="117dp"
+        android:layout_marginBottom="31dp"
         android:background="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_circle"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:src="@drawable/ic_mic" />
 </RelativeLayout>

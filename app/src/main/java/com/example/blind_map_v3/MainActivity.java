@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private static final String TAG = "MainActivity";
     private DirectionsRoute currentRout;
 
-    ImageButton mVoiceBtn;
-    ImageButton myAddress;
-    ImageButton whatsNear;
-    ImageButton whatsThere;
-    ImageButton cancelNavigatin;
+    private ImageButton mVoiceBtn;
+    private ImageButton myAddress;
+    private ImageButton whatsNear;
+    private ImageButton whatsThere;
+    private ImageButton cancelNavigatin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_splash_screen);
+        Vocabulary.setLanguage();
 
         if(!isStarted) {
             isStarted = true;
@@ -436,17 +437,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         tilequery.enqueueCall(new Callback<FeatureCollection>() {
             @Override
             public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
-                //tilequeryResponseTextView.setText(response.body().toJson());
-                System.err.println(response.body().toString());
-                //System.err.println(response.body().features().get(1).getProperty("name"));
-                System.err.println(response.body().features().get(0).getStringProperty("coordinates"));
-                System.err.println(response.body().features().get(1).getStringProperty("coordinates"));
-                System.err.println(response.body().features().get(2).getStringProperty("coordinates"));
-                System.err.println(response.body().features().get(3).getStringProperty("coordinates"));
                 featureList = response.body().features();
-                Point p = (Point) featureList.get(2).geometry();
-                System.err.println(p.latitude() + " " + p.longitude());
-                System.err.println(featureList.size());
                 toastMSG(new NearPoints(featureList).getClosestFeatureName());
                 speak(null, new NearPoints(featureList).getClosestFeatureName());
 
@@ -603,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null) {
-            final String[] commandsEn = {"address", "what nearest", "what there"};
+            final String[] commandsEn = {"address", "what is near", "point"};
             final String[] commandsLv = {"adrese", "kas ir tuvu", "kas tur ir"};
             final String[] commandsRu = {"адрес", "что рядом", "что там"};
             String[] commands;
@@ -629,21 +620,21 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             }
             if (commands != null) {
                 ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                if (result.get(0).contains(commands[0])) {
-                    Toast.makeText(getApplicationContext(), commands[0], Toast.LENGTH_SHORT).show();
+                if (result.get(0).contains(Vocabulary.commands[0])) {
+                    //Toast.makeText(getApplicationContext(), Vocabulary.commands[0], Toast.LENGTH_SHORT).show();
                     speak(null, address(curentLocation.getLongitude(), curentLocation.getLatitude()));
-                } else if (result.get(0).contains(commands[1])) {
-                    Toast.makeText(getApplicationContext(), commands[1] + " " + commands[2], Toast.LENGTH_SHORT).show();
+                } else if (result.get(0).contains(Vocabulary.commands[1])) {
+                    //Toast.makeText(getApplicationContext(), commands[1] + " " + commands[2], Toast.LENGTH_SHORT).show();
                     getPOI();
-                } else if (result.get(0).contains(commands[2])) {
-                    Toast.makeText(getApplicationContext(), commands[2], Toast.LENGTH_SHORT).show();
+                } else if (result.get(0).contains(Vocabulary.commands[2])) {
+                    //Toast.makeText(getApplicationContext(), Vocabulary.commands[2], Toast.LENGTH_SHORT).show();
                     creatFeatureList2();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Wrong command!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), Vocabulary.WRONG_COMMAND, Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Failed to recognize speech!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), Vocabulary.FAILED_TO_RECOGNIZE_SPEECH, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -670,11 +661,11 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                     break;
                 }
                 if (address == null && theta >= thetaMax) {
-                    return "Address not found";
+                    return Vocabulary.ADDRESS_NOT_FOUND;
                 }
             }
 
-            return "Your Address " + address;
+            return Vocabulary.YOUR_ADDRESS + address;
 
         } catch (JSONException e) {
             System.err.println(e.getMessage());
@@ -720,7 +711,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
         switch (item.getItemId()) {
             case R.id.userguide:
-                Toast.makeText(this, "User Guide", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "User Guide", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(MainActivity.this, com.example.blind_map_v3.UserGuide.class);
                 startActivity(i);
                 return true;

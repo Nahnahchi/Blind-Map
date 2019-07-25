@@ -15,11 +15,11 @@ public class NearPoints {
         for (Feature feature : featureList) {
             String name = feature.getStringProperty("name");
             if(name != null){
-                return String.format("%s %s Distance %d meters", name,getFeatureType(feature),getDistance(feature));
+                return String.format("%s %s %s %d %s", name,getFeatureType(feature),Vocabulary.DISTANCE,getDistance(feature),Vocabulary.METERS);
             }
 
         }
-        return "There are no points of interest around";
+        return Vocabulary.THERE_ARE_NO_POINTS_OF_INTEREST_AROUND;
     }
 
     private int getDistance(Feature feature){

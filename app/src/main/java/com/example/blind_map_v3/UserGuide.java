@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 import com.github.barteksc.pdfviewer.PDFView;
 
+import java.util.Locale;
+
 public class UserGuide extends AppCompatActivity {
 
 
@@ -20,8 +22,13 @@ public class UserGuide extends AppCompatActivity {
         setContentView(R.layout.activity_user_guide);
 
         userguide = (PDFView) findViewById(R.id.pdfuserguide);
-        userguide.fromAsset("userguide.pdf").load();
-
+        String locale = Locale.getDefault().toString();
+        if(locale.equals("lv_LV"))
+            userguide.fromAsset("USERGUIDE_LV.pdf").load();
+        else if(locale.equals("ru_RU"))
+            userguide.fromAsset("USERGUIDE_RU.pdf").load();
+        else
+            userguide.fromAsset("USERGUIDE_ENG.pdf").load();
     }
 
     @Override
