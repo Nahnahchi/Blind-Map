@@ -2,7 +2,7 @@ package com.example.blind_map_v3;
 
 import java.util.Locale;
 
-public final class Vocabulary {
+final class Vocabulary {
 
     static String FeaterFormatText = "%s %s %s %d %s";
 
@@ -14,8 +14,6 @@ public final class Vocabulary {
     static String METERS = "meters";
     static String THERE_ARE_NO_POINTS_OF_INTEREST_AROUND= "There are no points of interest around";
     static String[] commands = {"address", "what is near", "point"};
-
-    static String NOTHING_FOUND_YET = "nothing found yet";
     static String THERE_IS = "There is ";
     static String TURN_LEFT = "Turn left ";
     static String TURN_RIGHT = "Turn right ";
@@ -24,7 +22,7 @@ public final class Vocabulary {
     static String TURN_BACK_RIGHT = "Turn back right ";
 
 
-    public static void setLanguage() {
+    static void setLanguage() {
         String locale = Locale.getDefault().toString();
 
         if(locale.equals("en_US"))

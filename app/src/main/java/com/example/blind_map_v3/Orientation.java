@@ -227,7 +227,7 @@ public class Orientation {
 
     public String type(Feature f) {
         String type = f.getStringProperty("category_en");
-        type = type.replaceAll("_", " ");
+        //type = type.replaceAll("_", " ");
         return type;
     }
 

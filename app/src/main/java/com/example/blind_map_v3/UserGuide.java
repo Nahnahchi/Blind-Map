@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 import com.github.barteksc.pdfviewer.PDFView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
 public class UserGuide extends AppCompatActivity {
@@ -21,7 +23,7 @@ public class UserGuide extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_guide);
 
-        userguide = (PDFView) findViewById(R.id.pdfuserguide);
+        userguide = findViewById(R.id.pdfuserguide);
         String locale = Locale.getDefault().toString();
         if(locale.equals("lv_LV"))
             userguide.fromAsset("USERGUIDE_LV.pdf").load();
@@ -38,15 +40,12 @@ public class UserGuide extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected( MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.back:
-                Intent i = new Intent(UserGuide.this, MainActivity.class);
-                startActivity(i);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
+        if (item.getItemId() == R.id.back) {
+            Intent i = new Intent(UserGuide.this, MainActivity.class);
+            startActivity(i);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }
