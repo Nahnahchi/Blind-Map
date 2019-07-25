@@ -11,11 +11,11 @@ import timber.log.Timber;
 
 class Speaker {
 
-    private static boolean lock = false;
     private static TextToSpeech t2s; // Text to speech
 
     // Init object
     Speaker(final Activity activity, final String language, final String toSpeak) {
+        onPause();
         t2s = new TextToSpeech(activity.getApplicationContext(), status -> {
             Locale locale;
             if (status == TextToSpeech.SUCCESS) {
