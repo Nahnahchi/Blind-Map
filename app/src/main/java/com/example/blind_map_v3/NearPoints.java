@@ -4,22 +4,21 @@ import com.mapbox.geojson.Feature;
 
 import java.util.List;
 
-public class NearPoints {
+class NearPoints {
     private List<Feature> featureList;
 
-    public NearPoints(List<Feature> featureList) {
+    NearPoints(List<Feature> featureList) {
         this.featureList = featureList;
     }
 
-    public String getClosestFeatureName (){
+    String getClosestFeatureName (){
         for (Feature feature : featureList) {
             String name = feature.getStringProperty("name");
             if(name != null){
-                return String.format("%s %s Distance %d meters", name,getFeatureType(feature),getDistance(feature));
+                return String.format(Vocabulary.FeaterFormatText, name,getFeatureType(feature),Vocabulary.DISTANCE,getDistance(feature),Vocabulary.METERS);
             }
-
         }
-        return "There are no points of interest around";
+        return Vocabulary.THERE_ARE_NO_POINTS_OF_INTEREST_AROUND;
     }
 
     private int getDistance(Feature feature){
@@ -33,7 +32,7 @@ public class NearPoints {
     }
 
     private String getFeatureType(Feature feature){
-        String type = feature.getStringProperty("class");
+        String type = feature.getStringProperty("category_en");
 
         if(type == null){
             return "";
