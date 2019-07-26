@@ -7,13 +7,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-
-import java.util.ArrayList;
 import java.util.Locale;
 
-public class Speaker {
+public final class Speaker {
 
-    private static TextToSpeech t2s; // Text to speech
+    private TextToSpeech t2s; // Text to speech
 
     // Init object
     Speaker(final Activity activity, final String language, final String toSpeak) {
@@ -93,7 +91,7 @@ public class Speaker {
         t2s.speak(words.toString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 
-    static void onPause() {
+    void onPause() {
         if (t2s != null) {
             t2s.stop();
             t2s.shutdown();

@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     }
 
     public void speak(String locale, String toSpeak) {
-        new Speaker(this, locale, toSpeak);
+        new Speaker(MainActivity.this, locale, toSpeak);
     }
 
     @Override
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     @Override
     public void onPause() {
         super.onPause();
-        Speaker.onPause();
+        //Speaker.onPause();
         mapView.onPause();
     }
 
